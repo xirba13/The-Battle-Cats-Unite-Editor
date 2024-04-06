@@ -31,28 +31,30 @@ public class GUIManager {
         Label xpLabel = new Label("XP (0-99999999):");
         TextField xpField = new TextField();
 
-        Label catFruitsSummaryLabel = new Label("Cat Fruits (Total Max. 256)");
+        Label catFruitsSummaryLabel = new Label("Catfruits & Seeds (Total Max. 256)");
         Button expandButton = new Button("Expand");
         Label redSeedsLabel = new Label("Red Seeds:");
         TextField redSeedsField = new TextField();
-        Label redFruitsLabel = new Label("Red Fruits:");
+        Label redFruitsLabel = new Label("Red Catfruits:");
         TextField redFruitsField = new TextField();
         Label blueSeedsLabel = new Label("Blue Seeds:");
         TextField blueSeedsField = new TextField();
-        Label blueFruitsLabel = new Label("Blue Fruits:");
+        Label blueFruitsLabel = new Label("Blue Catfruits:");
         TextField blueFruitsField = new TextField();
         Label yellowSeedsLabel = new Label("Yellow Seeds:");
         TextField yellowSeedsField = new TextField();
-        Label yellowFruitsLabel = new Label("Yellow Fruits:");
+        Label yellowFruitsLabel = new Label("Yellow Catfruits:");
         TextField yellowFruitsField = new TextField();
         Label purpleSeedsLabel = new Label("Purple Seeds:");
         TextField purpleSeedsField = new TextField();
-        Label purpleFruitsLabel = new Label("Purple Fruits:");
+        Label purpleFruitsLabel = new Label("Purple Catfruits:");
         TextField purpleFruitsField = new TextField();
         Label greenSeedsLabel = new Label("Green Seeds:");
         TextField greenSeedsField = new TextField();
-        Label greenFruitsLabel = new Label("Green Fruits:");
+        Label greenFruitsLabel = new Label("Green Catfruits:");
         TextField greenFruitsField = new TextField();
+        Label epicFruitsLabel = new Label("Epic Catfruits:");
+        TextField epicFruitsField = new TextField();
 
         Button submitButton = new Button("Save");
 
@@ -64,16 +66,18 @@ public class GUIManager {
         seedsAndFruitsContainer.setHgap(10);
         seedsAndFruitsContainer.setVgap(5);
 
-        seedsAndFruitsContainer.addRow(0, redSeedsLabel, redSeedsField, redFruitsLabel,
-                redFruitsField);
-        seedsAndFruitsContainer.addRow(1, blueSeedsLabel, blueSeedsField, blueFruitsLabel,
-                blueFruitsField);
-        seedsAndFruitsContainer.addRow(2, yellowSeedsLabel, yellowSeedsField, yellowFruitsLabel,
-                yellowFruitsField);
-        seedsAndFruitsContainer.addRow(3, purpleSeedsLabel, purpleSeedsField, purpleFruitsLabel,
-                purpleFruitsField);
-        seedsAndFruitsContainer.addRow(4, greenSeedsLabel, greenSeedsField, greenFruitsLabel,
-                greenFruitsField);
+        seedsAndFruitsContainer.addRow(0, redFruitsLabel, redFruitsField, redSeedsLabel,
+                redSeedsField);
+        seedsAndFruitsContainer.addRow(1, blueFruitsLabel, blueFruitsField, blueSeedsLabel,
+                blueSeedsField);
+        seedsAndFruitsContainer.addRow(2, yellowFruitsLabel, yellowFruitsField, yellowSeedsLabel,
+                yellowSeedsField);
+        seedsAndFruitsContainer.addRow(3, purpleFruitsLabel, purpleFruitsField, purpleSeedsLabel,
+                purpleSeedsField);
+        seedsAndFruitsContainer.addRow(4, greenFruitsLabel, greenFruitsField, greenSeedsLabel,
+                greenSeedsField);
+        seedsAndFruitsContainer.addRow(5, epicFruitsLabel,
+                epicFruitsField, new Region(), new Region());
 
         seedsAndFruitsContainer.setVisible(false);
 
@@ -81,7 +85,7 @@ public class GUIManager {
         fileManager.readCurrentValues(filePath, catFoodField, rareTicketsField, catTicketsField,
                 platinumTicketsField, xpField, redSeedsField, redFruitsField, blueSeedsField,
                 blueFruitsField, yellowSeedsField, yellowFruitsField, purpleSeedsField,
-                purpleFruitsField, greenSeedsField, greenFruitsField);
+                purpleFruitsField, greenSeedsField, greenFruitsField, epicFruitsField);
 
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
@@ -114,7 +118,7 @@ public class GUIManager {
             }
             seedsAndFruitsContainer.setVisible(!seedsAndFruitsContainer.isVisible());
         });
-        
+
 
         gridPane.add(submitButton, 3, 7);
         gridPane.setAlignment(Pos.CENTER);
@@ -136,16 +140,17 @@ public class GUIManager {
             int purpleFruits = getIntValue(purpleFruitsField.getText().trim(), purpleFruitsField);
             int greenSeeds = getIntValue(greenSeedsField.getText().trim(), greenSeedsField);
             int greenFruits = getIntValue(greenFruitsField.getText().trim(), greenFruitsField);
+            int epicFruits = getIntValue(epicFruitsField.getText().trim(), epicFruitsField);
 
 
             if (validateValues(catFood, rareTickets, catTickets, platinumTickets, xp, redSeeds,
                     redFruits, blueSeeds, blueFruits, yellowSeeds, yellowFruits, purpleSeeds,
-                    purpleFruits, greenSeeds, greenFruits)) {
+                    purpleFruits, greenSeeds, greenFruits, epicFruits)) {
                 try {
                     fileManager.modifyFile(filePath, catFood, rareTickets, catTickets,
                             platinumTickets, xp, redSeeds, redFruits, blueSeeds, blueFruits,
                             yellowSeeds, yellowFruits, purpleSeeds, purpleFruits, greenSeeds,
-                            greenFruits);
+                            greenFruits, epicFruits);
                     showSuccessAlert("Success", "Values modified successfully.");
                 } catch (IOException e) {
                     showAlert("Error",
@@ -190,14 +195,15 @@ public class GUIManager {
     private static boolean validateValues(int catFood, int rareTickets, int catTickets,
             int platinumTickets, int xp, int redSeeds, int redFruits, int blueSeeds, int blueFruits,
             int yellowSeeds, int yellowFruits, int purpleSeeds, int purpleFruits, int greenSeeds,
-            int greenFruits) {
+            int greenFruits, int epicFruits) {
 
         int totalSeeds = redSeeds + blueSeeds + yellowSeeds + purpleSeeds + greenSeeds;
-        int totalFruits = redFruits + blueFruits + yellowFruits + purpleFruits + greenFruits;
+        int totalFruits =
+                redFruits + blueFruits + yellowFruits + purpleFruits + greenFruits + epicFruits;
 
         boolean allFruitValuesNonNegative = redSeeds >= 0 && redFruits >= 0 && blueSeeds >= 0
                 && blueFruits >= 0 && yellowSeeds >= 0 && yellowFruits >= 0 && purpleSeeds >= 0
-                && purpleFruits >= 0 && greenSeeds >= 0 && greenFruits >= 0;
+                && purpleFruits >= 0 && greenSeeds >= 0 && greenFruits >= 0 && epicFruits >= 0;
 
         boolean totalValid = totalSeeds + totalFruits <= 256;
 

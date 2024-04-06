@@ -13,7 +13,7 @@ public class FileManager {
             TextField xpField, TextField redSeedsField, TextField redFruitsField,
             TextField blueSeedsField, TextField blueFruitsField, TextField yellowSeedsField,
             TextField yellowFruitsField, TextField purpleSeedsField, TextField purpleFruitsField,
-            TextField greenSeedsField, TextField greenFruitsField) {
+            TextField greenSeedsField, TextField greenFruitsField, TextField epicFruitsField) {
         try (RandomAccessFile file = new RandomAccessFile(filePath, "r")) {
             catFoodField.setPromptText(String.valueOf(
                     readByteAtPosition(file, 3, 0) << 8 | readByteAtPosition(file, 2, 15)));
@@ -45,6 +45,8 @@ public class FileManager {
 
             greenSeedsField.setPromptText(String.valueOf(readByteAtPosition(file, 13997, 11)));
             greenFruitsField.setPromptText(String.valueOf(readByteAtPosition(file, 13998, 15)));
+
+            epicFruitsField.setPromptText(String.valueOf(readByteAtPosition(file, 13999, 7)));
         } catch (IOException e) {
             GUIManager.showAlert("Error", "Error reading the file: " + e.getMessage());
         }
@@ -53,7 +55,7 @@ public class FileManager {
     public void modifyFile(String filePath, int catFood, int rareTickets, int catTickets,
             int platinumTickets, int xp, int redSeeds, int redFruits, int blueSeeds, int blueFruits,
             int yellowSeeds, int yellowFruits, int purpleSeeds, int purpleFruits, int greenSeeds,
-            int greenFruits) throws IOException {
+            int greenFruits, int epicFruits) throws IOException {
         try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
             file.seek(calculatePosition(3, 0));
             file.writeByte(catFood >> 8);
@@ -94,6 +96,8 @@ public class FileManager {
 
             writeByteAtPosition(file, 13997, 11, greenSeeds);
             writeByteAtPosition(file, 13998, 15, greenFruits);
+
+            writeByteAtPosition(file, 13999, 7, epicFruits);
         }
     }
 
