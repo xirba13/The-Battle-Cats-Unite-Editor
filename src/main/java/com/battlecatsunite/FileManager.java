@@ -10,7 +10,10 @@ public class FileManager {
 
     public void readCurrentValues(String filePath, TextField catFoodField,
             TextField rareTicketsField, TextField catTicketsField, TextField platinumTicketsField,
-            TextField xpField) {
+            TextField xpField, TextField redSeedsField, TextField redFruitsField,
+            TextField blueSeedsField, TextField blueFruitsField, TextField yellowSeedsField,
+            TextField yellowFruitsField, TextField purpleSeedsField, TextField purpleFruitsField,
+            TextField greenSeedsField, TextField greenFruitsField) {
         try (RandomAccessFile file = new RandomAccessFile(filePath, "r")) {
             catFoodField.setPromptText(String.valueOf(
                     readByteAtPosition(file, 3, 0) << 8 | readByteAtPosition(file, 2, 15)));
@@ -27,13 +30,30 @@ public class FileManager {
             xpField.setPromptText(String.valueOf(readByteAtPosition(file, 7, 6) << 24
                     | readByteAtPosition(file, 7, 5) << 16 | readByteAtPosition(file, 7, 4) << 8
                     | readByteAtPosition(file, 7, 3)));
+
+            redSeedsField.setPromptText(String.valueOf(readByteAtPosition(file, 13997, 3)));
+            redFruitsField.setPromptText(String.valueOf(readByteAtPosition(file, 13998, 7)));
+
+            blueSeedsField.setPromptText(String.valueOf(readByteAtPosition(file, 13997, 7)));
+            blueFruitsField.setPromptText(String.valueOf(readByteAtPosition(file, 13998, 11)));
+
+            yellowSeedsField.setPromptText(String.valueOf(readByteAtPosition(file, 13997, 15)));
+            yellowFruitsField.setPromptText(String.valueOf(readByteAtPosition(file, 13999, 3)));
+
+            purpleSeedsField.setPromptText(String.valueOf(readByteAtPosition(file, 13996, 15)));
+            purpleFruitsField.setPromptText(String.valueOf(readByteAtPosition(file, 13998, 3)));
+
+            greenSeedsField.setPromptText(String.valueOf(readByteAtPosition(file, 13997, 11)));
+            greenFruitsField.setPromptText(String.valueOf(readByteAtPosition(file, 13998, 15)));
         } catch (IOException e) {
             GUIManager.showAlert("Error", "Error reading the file: " + e.getMessage());
         }
     }
 
     public void modifyFile(String filePath, int catFood, int rareTickets, int catTickets,
-            int platinumTickets, int xp) throws IOException {
+            int platinumTickets, int xp, int redSeeds, int redFruits, int blueSeeds, int blueFruits,
+            int yellowSeeds, int yellowFruits, int purpleSeeds, int purpleFruits, int greenSeeds,
+            int greenFruits) throws IOException {
         try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
             file.seek(calculatePosition(3, 0));
             file.writeByte(catFood >> 8);
@@ -59,7 +79,28 @@ public class FileManager {
             file.writeByte((xp >> 8) & BYTE_MASK);
             file.seek(calculatePosition(7, 3));
             file.writeByte(xp & BYTE_MASK);
+
+            writeByteAtPosition(file, 13997, 3, redSeeds);
+            writeByteAtPosition(file, 13998, 7, redFruits);
+
+            writeByteAtPosition(file, 13997, 7, blueSeeds);
+            writeByteAtPosition(file, 13998, 11, blueFruits);
+
+            writeByteAtPosition(file, 13997, 15, yellowSeeds);
+            writeByteAtPosition(file, 13999, 3, yellowFruits);
+
+            writeByteAtPosition(file, 13996, 15, purpleSeeds);
+            writeByteAtPosition(file, 13998, 3, purpleFruits);
+
+            writeByteAtPosition(file, 13997, 11, greenSeeds);
+            writeByteAtPosition(file, 13998, 15, greenFruits);
         }
+    }
+
+    private void writeByteAtPosition(RandomAccessFile file, int row, int column, int value)
+            throws IOException {
+        file.seek(calculatePosition(row, column));
+        file.writeByte(value & BYTE_MASK);
     }
 
     private int readByteAtPosition(RandomAccessFile file, int row, int column) throws IOException {

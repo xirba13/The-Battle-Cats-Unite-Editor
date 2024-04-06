@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
@@ -29,11 +30,58 @@ public class GUIManager {
         TextField platinumTicketsField = new TextField();
         Label xpLabel = new Label("XP (0-99999999):");
         TextField xpField = new TextField();
+
+        Label catFruitsSummaryLabel = new Label("Cat Fruits (Total Max. 256)");
+        Button expandButton = new Button("Expand");
+        Label redSeedsLabel = new Label("Red Seeds:");
+        TextField redSeedsField = new TextField();
+        Label redFruitsLabel = new Label("Red Fruits:");
+        TextField redFruitsField = new TextField();
+        Label blueSeedsLabel = new Label("Blue Seeds:");
+        TextField blueSeedsField = new TextField();
+        Label blueFruitsLabel = new Label("Blue Fruits:");
+        TextField blueFruitsField = new TextField();
+        Label yellowSeedsLabel = new Label("Yellow Seeds:");
+        TextField yellowSeedsField = new TextField();
+        Label yellowFruitsLabel = new Label("Yellow Fruits:");
+        TextField yellowFruitsField = new TextField();
+        Label purpleSeedsLabel = new Label("Purple Seeds:");
+        TextField purpleSeedsField = new TextField();
+        Label purpleFruitsLabel = new Label("Purple Fruits:");
+        TextField purpleFruitsField = new TextField();
+        Label greenSeedsLabel = new Label("Green Seeds:");
+        TextField greenSeedsField = new TextField();
+        Label greenFruitsLabel = new Label("Green Fruits:");
+        TextField greenFruitsField = new TextField();
+
         Button submitButton = new Button("Save");
+
+        Region spacingRegion = new Region();
+        spacingRegion.setPrefHeight(20);
+
+
+        GridPane seedsAndFruitsContainer = new GridPane();
+        seedsAndFruitsContainer.setHgap(10);
+        seedsAndFruitsContainer.setVgap(5);
+
+        seedsAndFruitsContainer.addRow(0, redSeedsLabel, redSeedsField, redFruitsLabel,
+                redFruitsField);
+        seedsAndFruitsContainer.addRow(1, blueSeedsLabel, blueSeedsField, blueFruitsLabel,
+                blueFruitsField);
+        seedsAndFruitsContainer.addRow(2, yellowSeedsLabel, yellowSeedsField, yellowFruitsLabel,
+                yellowFruitsField);
+        seedsAndFruitsContainer.addRow(3, purpleSeedsLabel, purpleSeedsField, purpleFruitsLabel,
+                purpleFruitsField);
+        seedsAndFruitsContainer.addRow(4, greenSeedsLabel, greenSeedsField, greenFruitsLabel,
+                greenFruitsField);
+
+        seedsAndFruitsContainer.setVisible(false);
 
         FileManager fileManager = new FileManager();
         fileManager.readCurrentValues(filePath, catFoodField, rareTicketsField, catTicketsField,
-                platinumTicketsField, xpField);
+                platinumTicketsField, xpField, redSeedsField, redFruitsField, blueSeedsField,
+                blueFruitsField, yellowSeedsField, yellowFruitsField, purpleSeedsField,
+                purpleFruitsField, greenSeedsField, greenFruitsField);
 
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10));
@@ -49,36 +97,70 @@ public class GUIManager {
         gridPane.add(platinumTicketsField, 1, 3);
         gridPane.add(xpLabel, 0, 4);
         gridPane.add(xpField, 1, 4);
-        gridPane.add(submitButton, 1, 5);
+        gridPane.add(spacingRegion, 0, 5);
+        gridPane.add(catFruitsSummaryLabel, 0, 6);
+        gridPane.add(expandButton, 1, 6);
+        gridPane.add(seedsAndFruitsContainer, 0, 7, 2, 1);
+
+        final boolean[] expandedMenu = {false};
+        expandButton.setOnAction(event -> {
+            expandedMenu[0] = !expandedMenu[0];
+            if (expandedMenu[0]) {
+                expandButton.setText("Collapse");
+                GridPane.setRowIndex(submitButton, 11);
+            } else {
+                expandButton.setText("Expand");
+                GridPane.setRowIndex(submitButton, 7);
+            }
+            seedsAndFruitsContainer.setVisible(!seedsAndFruitsContainer.isVisible());
+        });
+        
+
+        gridPane.add(submitButton, 3, 7);
         gridPane.setAlignment(Pos.CENTER);
 
         submitButton.setOnAction(event -> {
-            try {
-                int catFood = getIntValue(catFoodField.getText().trim(), catFoodField);
-                int rareTickets = getIntValue(rareTicketsField.getText().trim(), rareTicketsField);
-                int catTickets = getIntValue(catTicketsField.getText().trim(), catTicketsField);
-                int platinumTickets =
-                        getIntValue(platinumTicketsField.getText().trim(), platinumTicketsField);
-                int xp = getIntValue(xpField.getText().trim(), xpField);
+            int catFood = getIntValue(catFoodField.getText().trim(), catFoodField);
+            int rareTickets = getIntValue(rareTicketsField.getText().trim(), rareTicketsField);
+            int catTickets = getIntValue(catTicketsField.getText().trim(), catTicketsField);
+            int platinumTickets =
+                    getIntValue(platinumTicketsField.getText().trim(), platinumTicketsField);
+            int xp = getIntValue(xpField.getText().trim(), xpField);
+            int redSeeds = getIntValue(redSeedsField.getText().trim(), redSeedsField);
+            int redFruits = getIntValue(redFruitsField.getText().trim(), redFruitsField);
+            int blueSeeds = getIntValue(blueSeedsField.getText().trim(), blueSeedsField);
+            int blueFruits = getIntValue(blueFruitsField.getText().trim(), blueFruitsField);
+            int yellowSeeds = getIntValue(yellowSeedsField.getText().trim(), yellowSeedsField);
+            int yellowFruits = getIntValue(yellowFruitsField.getText().trim(), yellowFruitsField);
+            int purpleSeeds = getIntValue(purpleSeedsField.getText().trim(), purpleSeedsField);
+            int purpleFruits = getIntValue(purpleFruitsField.getText().trim(), purpleFruitsField);
+            int greenSeeds = getIntValue(greenSeedsField.getText().trim(), greenSeedsField);
+            int greenFruits = getIntValue(greenFruitsField.getText().trim(), greenFruitsField);
 
-                if (validateValues(catFood, rareTickets, catTickets, platinumTickets, xp)) {
+
+            if (validateValues(catFood, rareTickets, catTickets, platinumTickets, xp, redSeeds,
+                    redFruits, blueSeeds, blueFruits, yellowSeeds, yellowFruits, purpleSeeds,
+                    purpleFruits, greenSeeds, greenFruits)) {
+                try {
                     fileManager.modifyFile(filePath, catFood, rareTickets, catTickets,
-                            platinumTickets, xp);
+                            platinumTickets, xp, redSeeds, redFruits, blueSeeds, blueFruits,
+                            yellowSeeds, yellowFruits, purpleSeeds, purpleFruits, greenSeeds,
+                            greenFruits);
                     showSuccessAlert("Success", "Values modified successfully.");
-                } else {
-                    showAlert("Error", "Please enter values within the allowed limits.");
+                } catch (IOException e) {
+                    showAlert("Error",
+                            "An error occurred while modifying the file: " + e.getMessage());
                 }
-            } catch (NumberFormatException e) {
-                showAlert("Error", "Please enter valid numeric values.");
-            } catch (IOException e) {
-                showAlert("Error", "An error occurred while modifying the file: " + e.getMessage());
+            } else {
+                showAlert("Error", "Please enter valid numeric values within the allowed limits.");
             }
         });
 
-        Scene scene = new Scene(gridPane, 400, 350);
+        Scene scene = new Scene(gridPane, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
 
     private static void showSuccessAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -106,11 +188,27 @@ public class GUIManager {
     }
 
     private static boolean validateValues(int catFood, int rareTickets, int catTickets,
-            int platinumTickets, int xp) {
-        return catFood >= 0 && catFood <= 65535 && rareTickets >= 0 && rareTickets <= 999
-                && catTickets >= 0 && catTickets <= 999 && platinumTickets >= 0
-                && platinumTickets <= 999 && xp >= 0 && xp <= 99999999;
+            int platinumTickets, int xp, int redSeeds, int redFruits, int blueSeeds, int blueFruits,
+            int yellowSeeds, int yellowFruits, int purpleSeeds, int purpleFruits, int greenSeeds,
+            int greenFruits) {
+
+        int totalSeeds = redSeeds + blueSeeds + yellowSeeds + purpleSeeds + greenSeeds;
+        int totalFruits = redFruits + blueFruits + yellowFruits + purpleFruits + greenFruits;
+
+        boolean allFruitValuesNonNegative = redSeeds >= 0 && redFruits >= 0 && blueSeeds >= 0
+                && blueFruits >= 0 && yellowSeeds >= 0 && yellowFruits >= 0 && purpleSeeds >= 0
+                && purpleFruits >= 0 && greenSeeds >= 0 && greenFruits >= 0;
+
+        boolean totalValid = totalSeeds + totalFruits <= 256;
+
+
+        boolean individualValid = catFood >= 0 && catFood <= 65535 && rareTickets >= 0
+                && rareTickets <= 999 && catTickets >= 0 && catTickets <= 999
+                && platinumTickets >= 0 && platinumTickets <= 999 && xp >= 0 && xp <= 99999999;
+
+        return totalValid && individualValid && allFruitValuesNonNegative;
     }
+
 
     static void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

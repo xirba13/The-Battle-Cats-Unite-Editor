@@ -24,7 +24,7 @@ public class App extends Application {
         StackPane root = new StackPane();
         root.setPadding(new Insets(10));
 
-        Label selectFileLabel = new Label("Select or Drag the file:");
+        Label selectFileLabel = new Label("Select or Drop the file:");
         Button selectFileButton = new Button("Select File");
 
         VBox vbox = new VBox(10);
