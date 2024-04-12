@@ -101,6 +101,29 @@ public class FileManager {
         }
     }
 
+    public static void unlockUnitsEnemies(String filePath, int startRow, int startColumn,
+            int endRow, int endColumn) {
+        int increment = 4;
+
+        try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
+            long currentPosition = calculatePosition(startRow, startColumn);
+
+            while (currentPosition <= calculatePosition(endRow, endColumn)) {
+                file.seek(currentPosition);
+                byte currentValue = file.readByte();
+
+                if (currentValue == 0x00) {
+                    file.seek(currentPosition);
+                    file.writeByte(0x01);
+                }
+
+                currentPosition += increment;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void writeByteAtPosition(RandomAccessFile file, int row, int column, int value)
             throws IOException {
         file.seek(calculatePosition(row, column));
@@ -112,7 +135,7 @@ public class FileManager {
         return file.readByte() & BYTE_MASK;
     }
 
-    private long calculatePosition(int row, int column) {
+    private static long calculatePosition(int row, int column) {
         return row * 16 + column;
     }
 }

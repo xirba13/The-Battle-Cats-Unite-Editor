@@ -30,6 +30,8 @@ public class GUIManager {
         TextField platinumTicketsField = new TextField();
         Label xpLabel = new Label("XP (0-99999999):");
         TextField xpField = new TextField();
+        CheckBox unlockUnitsCheckBox = new CheckBox("Unlock all Units");
+        CheckBox unlockEnemiesCheckbox = new CheckBox("Complete Enemy Guide");
 
         Label catFruitsSummaryLabel = new Label("Catfruits & Seeds (Total Max. 256)");
         Button expandButton = new Button("Expand");
@@ -58,8 +60,10 @@ public class GUIManager {
 
         Button submitButton = new Button("Save");
 
-        Region spacingRegion = new Region();
-        spacingRegion.setPrefHeight(20);
+        Region spacingRegion1 = new Region();
+        spacingRegion1.setPrefHeight(20);
+        Region spacingRegion2 = new Region();
+        spacingRegion2.setPrefHeight(20);
 
 
         GridPane seedsAndFruitsContainer = new GridPane();
@@ -76,8 +80,8 @@ public class GUIManager {
                 purpleSeedsField);
         seedsAndFruitsContainer.addRow(4, greenFruitsLabel, greenFruitsField, greenSeedsLabel,
                 greenSeedsField);
-        seedsAndFruitsContainer.addRow(5, epicFruitsLabel,
-                epicFruitsField, new Region(), new Region());
+        seedsAndFruitsContainer.addRow(5, epicFruitsLabel, epicFruitsField, new Region(),
+                new Region());
 
         seedsAndFruitsContainer.setVisible(false);
 
@@ -101,10 +105,13 @@ public class GUIManager {
         gridPane.add(platinumTicketsField, 1, 3);
         gridPane.add(xpLabel, 0, 4);
         gridPane.add(xpField, 1, 4);
-        gridPane.add(spacingRegion, 0, 5);
-        gridPane.add(catFruitsSummaryLabel, 0, 6);
-        gridPane.add(expandButton, 1, 6);
-        gridPane.add(seedsAndFruitsContainer, 0, 7, 2, 1);
+        gridPane.add(spacingRegion1, 0, 5);
+        gridPane.add(unlockUnitsCheckBox, 0, 6);
+        gridPane.add(unlockEnemiesCheckbox, 1, 6);
+        gridPane.add(spacingRegion2, 0, 7);
+        gridPane.add(catFruitsSummaryLabel, 0, 8);
+        gridPane.add(expandButton, 1, 8);
+        gridPane.add(seedsAndFruitsContainer, 0, 9, 2, 1);
 
         final boolean[] expandedMenu = {false};
         expandButton.setOnAction(event -> {
@@ -114,13 +121,13 @@ public class GUIManager {
                 GridPane.setRowIndex(submitButton, 11);
             } else {
                 expandButton.setText("Expand");
-                GridPane.setRowIndex(submitButton, 7);
+                GridPane.setRowIndex(submitButton, 9);
             }
             seedsAndFruitsContainer.setVisible(!seedsAndFruitsContainer.isVisible());
         });
 
 
-        gridPane.add(submitButton, 3, 7);
+        gridPane.add(submitButton, 3, 9);
         gridPane.setAlignment(Pos.CENTER);
 
         submitButton.setOnAction(event -> {
@@ -141,6 +148,14 @@ public class GUIManager {
             int greenSeeds = getIntValue(greenSeedsField.getText().trim(), greenSeedsField);
             int greenFruits = getIntValue(greenFruitsField.getText().trim(), greenFruitsField);
             int epicFruits = getIntValue(epicFruitsField.getText().trim(), epicFruitsField);
+
+            if (unlockUnitsCheckBox.isSelected()) {
+                FileManager.unlockUnitsEnemies(filePath, 0x19C, 0x0C, 0x201, 0x00);
+            }
+
+            if (unlockEnemiesCheckbox.isSelected()) {
+                FileManager.unlockUnitsEnemies(filePath, 0x12B, 0x04, 0x19C, 0x04);
+            }
 
 
             if (validateValues(catFood, rareTickets, catTickets, platinumTickets, xp, redSeeds,
@@ -165,7 +180,6 @@ public class GUIManager {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
 
     private static void showSuccessAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -214,6 +228,7 @@ public class GUIManager {
 
         return totalValid && individualValid && allFruitValuesNonNegative;
     }
+
 
 
     static void showAlert(String title, String message) {
