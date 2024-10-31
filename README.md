@@ -7,4 +7,4 @@ I tested it in the 1.0.7 Japanese version and in the 1.0.0  Southeast Asia versi
 
 NOTE: if you create a save in the 1.0.0 Japanese version Platinum Tickets won't work with the editor, even when you update the game.
 
-MAKE SURE TO MAKE A BACKUP BEFORE CHANGING ANYTHING.
+MAKE SURE TO CREATE A BACKUP BEFORE CHANGING ANYTHING.
