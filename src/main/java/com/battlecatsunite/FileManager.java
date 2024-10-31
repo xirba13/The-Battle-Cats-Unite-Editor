@@ -2,6 +2,9 @@ package com.battlecatsunite;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javafx.scene.control.TextField;
 
 public class FileManager {
@@ -104,20 +107,43 @@ public class FileManager {
     public static void unlockUnitsEnemies(String filePath, int startRow, int startColumn,
             int endRow, int endColumn) {
         int increment = 4;
+        Set<Integer> cat_ids = new HashSet<>(Arrays.asList(
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 18, 21, 20, 19, 14, 123,
+            22, 12, 13, 10, 9, 17, 11, 23, 15, 16, 28, 29, 45, 
+            62, 82, 108, 127, 140, 24, 25, 130, 172, 340, 390, 
+            391, 392, 393, 398, 399, 354, 352, 353, 355, 356, 
+            357, 371, 372, 373, 37, 38, 41, 46, 47, 48, 49, 50, 
+            51, 52, 55, 56, 58, 145, 146, 147, 148, 149, 197, 
+            198, 341, 343, 376, 60, 126, 154, 370, 32, 61, 129, 
+            200, 344, 131, 144, 237, 238, 239, 35, 33, 39, 36, 
+            40, 31, 30, 150, 151, 152, 153, 199, 377, 91, 92, 
+            93, 94, 95, 96, 97, 98, 99, 367, 267, 368, 369, 
+            273, 384, 386, 387, 388, 389, 42, 43, 44, 57, 59, 
+            143, 71, 72, 73, 124, 125, 158, 338, 75, 76, 105, 
+            106, 107, 159, 351, 84, 83, 85, 86, 87, 177, 396, 
+            136, 138, 137, 134, 135, 203, 322, 194, 195, 196, 
+            212, 226, 261, 257, 258, 259, 271, 272, 316, 345, 
+            346, 347, 348, 349, 34, 168, 169, 170, 171, 240, 
+            283, 286, 397, 269, 350, 363, 364, 365, 366, 53
+        ));
 
         try (RandomAccessFile file = new RandomAccessFile(filePath, "rw")) {
             long currentPosition = calculatePosition(startRow, startColumn);
-
+            Integer i = 0;
             while (currentPosition <= calculatePosition(endRow, endColumn)) {
                 file.seek(currentPosition);
                 byte currentValue = file.readByte();
 
-                if (currentValue == 0x00) {
+                if (cat_ids.contains(i)) {
                     file.seek(currentPosition);
                     file.writeByte(0x01);
+                } else if(currentValue == 0x01) {
+                    file.seek(currentPosition);
+                    file.writeByte(0x00);
                 }
 
                 currentPosition += increment;
+                i++;
             }
         } catch (IOException e) {
             e.printStackTrace();

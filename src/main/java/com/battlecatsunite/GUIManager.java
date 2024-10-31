@@ -11,6 +11,8 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class GUIManager {
 
@@ -131,6 +133,7 @@ public class GUIManager {
         gridPane.setAlignment(Pos.CENTER);
 
         submitButton.setOnAction(event -> {
+
             int catFood = getIntValue(catFoodField.getText().trim(), catFoodField);
             int rareTickets = getIntValue(rareTicketsField.getText().trim(), rareTicketsField);
             int catTickets = getIntValue(catTicketsField.getText().trim(), catTicketsField);
@@ -149,23 +152,24 @@ public class GUIManager {
             int greenFruits = getIntValue(greenFruitsField.getText().trim(), greenFruitsField);
             int epicFruits = getIntValue(epicFruitsField.getText().trim(), epicFruitsField);
 
-            if (unlockUnitsCheckBox.isSelected()) {
-                FileManager.unlockUnitsEnemies(filePath, 0x19C, 0x0C, 0x201, 0x00);
-            }
-
-            if (unlockEnemiesCheckbox.isSelected()) {
-                FileManager.unlockUnitsEnemies(filePath, 0x12B, 0x04, 0x19C, 0x04);
-            }
 
 
             if (validateValues(catFood, rareTickets, catTickets, platinumTickets, xp, redSeeds,
                     redFruits, blueSeeds, blueFruits, yellowSeeds, yellowFruits, purpleSeeds,
                     purpleFruits, greenSeeds, greenFruits, epicFruits)) {
                 try {
+                    createSaveFileBackup(filePath);
                     fileManager.modifyFile(filePath, catFood, rareTickets, catTickets,
                             platinumTickets, xp, redSeeds, redFruits, blueSeeds, blueFruits,
                             yellowSeeds, yellowFruits, purpleSeeds, purpleFruits, greenSeeds,
                             greenFruits, epicFruits);
+                    if (unlockUnitsCheckBox.isSelected()) {
+                        FileManager.unlockUnitsEnemies(filePath, 0x19C, 0x0C, 0x201, 0x00);
+                    }
+
+                    if (unlockEnemiesCheckbox.isSelected()) {
+                        FileManager.unlockUnitsEnemies(filePath, 0x12B, 0x04, 0x19C, 0x04);
+                    }
                     showSuccessAlert("Success", "Values modified successfully.");
                 } catch (IOException e) {
                     showAlert("Error",
@@ -180,6 +184,22 @@ public class GUIManager {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+
+    private static void createSaveFileBackup(String filePath) {
+        File originalFile = new File(filePath);
+        File backupFile = new File(filePath + ".bak");
+
+        try {
+            Files.copy(originalFile.toPath(), backupFile.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            showAlert("Error",
+                    "An error occurred while creating the backup file: " + e.getMessage());
+        }
+    }
+
+
 
     private static void showSuccessAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
